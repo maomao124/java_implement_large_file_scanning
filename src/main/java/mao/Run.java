@@ -258,7 +258,7 @@ public class Run
         }
         catch (Exception e)
         {
-            Run.size = 10;
+            Run.size = 100;
             System.out.println("排行最多显示" + size + "条");
         }
     }

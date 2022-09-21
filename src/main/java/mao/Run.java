@@ -1,10 +1,7 @@
 package mao;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Project name(项目名称)：java实现大文件扫描
@@ -30,6 +27,11 @@ public class Run
      * 工作路径
      */
     public static String path;
+
+    /**
+     * id
+     */
+    private static int id = 0;
 
     /**
      * 获取工作路径下的所有文件，返回绝对路径
@@ -66,7 +68,6 @@ public class Run
      */
     private static void getFiles_AbsolutePath(String clientBase, List<FilePath> list)
     {
-        int id = 0;
         File file = new File(clientBase);
         // 如果这个路径是文件夹
         if (file.isDirectory())
@@ -158,7 +159,17 @@ public class Run
         System.out.println("+------------------------------------------------------->");
         System.out.println("|  序号  |   大小    |    文件路径");
         System.out.println("+------------------------------------------------------->");
-        for (int i = 0; i < 10; i++)
+        int loop;
+        //Math.min(list.size(), size);
+        if (list.size() > size)
+        {
+            loop = size;
+        }
+        else
+        {
+            loop = list.size();
+        }
+        for (int i = 0; i < loop; i++)
         {
             FilePath filePath = list.get(i);
             if (filePath.getSize() > 1024 * 1024)
@@ -214,7 +225,7 @@ public class Run
     {
         try
         {
-            String path = args[0];
+            String path = args[1];
             if (verifyPath(path))
             {
                 Run.path = path;
@@ -240,7 +251,8 @@ public class Run
     {
         try
         {
-            int size = Integer.parseInt(args[1]);
+            int size = Integer.parseInt(args[0]);
+
             Run.size = size;
             System.out.println("排行最多显示" + size + "条");
         }
@@ -251,19 +263,41 @@ public class Run
         }
     }
 
+    /**
+     * 计算总大小
+     *
+     * @param list 列表
+     */
+    private static void CalculateTotalSize(List<FilePath> list)
+    {
+        long totalSize = 0;
+        for (FilePath filePath : list)
+        {
+            totalSize += filePath.getSize();
+        }
+        System.out.println();
+        System.out.printf("所有文件加起来的总大小：%.4fMB\n", (((double) totalSize)) / 1024.0 / 1024.0);
+    }
+
     public static void main(String[] args)
     {
+        //System.out.println(Arrays.toString(args));
+
+        System.out.println("第一个参数为排行榜最多显示的条数，第二个参数为工作目录");
+        System.out.println();
+
         loadSize(args);
 
         loadPath(args);
 
         System.out.println();
-        List<FilePath> list = getFiles_AbsolutePath();
+        List<FilePath> list = getFiles_AbsolutePath(path);
         System.out.println();
 
         sort(list);
 
         show(list);
 
+        CalculateTotalSize(list);
     }
 }

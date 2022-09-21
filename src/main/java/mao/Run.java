@@ -21,7 +21,15 @@ import java.util.List;
 
 public class Run
 {
+    /**
+     * 排行榜大小
+     */
     public static int size;
+
+    /**
+     * 工作路径
+     */
+    public static String path;
 
     /**
      * 获取工作路径下的所有文件，返回绝对路径
@@ -169,12 +177,70 @@ public class Run
         System.out.println("+------------------------------------------------------->");
     }
 
-
-    public static void main(String[] args)
+    /**
+     * 验证路径是否正确
+     *
+     * @param path 路径
+     * @return boolean
+     */
+    private static boolean verifyPath(String path)
     {
         try
         {
-            int size = Integer.parseInt(args[0]);
+            File file = new File(path);
+            if (!file.exists())
+            {
+                return false;
+            }
+            if (!file.isDirectory())
+            {
+                return false;
+            }
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * 加载工作路径
+     *
+     * @param args 参数
+     */
+    private static void loadPath(String[] args)
+    {
+        try
+        {
+            String path = args[0];
+            if (verifyPath(path))
+            {
+                Run.path = path;
+            }
+            else
+            {
+                Run.path = new File("").getAbsolutePath();
+            }
+        }
+        catch (Exception e)
+        {
+            Run.path = new File("").getAbsolutePath();
+        }
+        System.out.println("工作路径：" + Run.path);
+    }
+
+    /**
+     * 加载排行榜大小
+     *
+     * @param args 参数
+     */
+    private static void loadSize(String[] args)
+    {
+        try
+        {
+            int size = Integer.parseInt(args[1]);
             Run.size = size;
             System.out.println("排行最多显示" + size + "条");
         }
@@ -183,6 +249,13 @@ public class Run
             Run.size = 10;
             System.out.println("排行最多显示" + size + "条");
         }
+    }
+
+    public static void main(String[] args)
+    {
+        loadSize(args);
+
+        loadPath(args);
 
         System.out.println();
         List<FilePath> list = getFiles_AbsolutePath();
@@ -191,7 +264,6 @@ public class Run
         sort(list);
 
         show(list);
-
 
     }
 }

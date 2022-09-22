@@ -1,7 +1,9 @@
 package mao;
 
+import java.awt.*;
 import java.io.File;
 import java.util.*;
+import java.util.List;
 
 /**
  * Project name(项目名称)：java实现大文件扫描
@@ -34,6 +36,11 @@ public class Run
     private static int id = 0;
 
     /**
+     * 列表
+     */
+    private static List<FilePath> list;
+
+    /**
      * 获取工作路径下的所有文件，返回绝对路径
      *
      * @return {@link List}<{@link FilePath}>
@@ -42,7 +49,7 @@ public class Run
     {
         File file = new File("");
         String path = file.getAbsolutePath();
-        List<FilePath> list = new ArrayList<>();
+        list = new ArrayList<>();
         getFiles_AbsolutePath(path, list);
         return list;
     }
@@ -55,7 +62,7 @@ public class Run
      */
     public static List<FilePath> getFiles_AbsolutePath(String path)
     {
-        List<FilePath> list = new ArrayList<>();
+        list = new ArrayList<>();
         getFiles_AbsolutePath(path, list);
         return list;
     }
@@ -286,6 +293,8 @@ public class Run
     {
         //System.out.println(Arrays.toString(args));
 
+        Thread main = Thread.currentThread();
+
         System.out.println("第一个参数为排行榜最多显示的条数，第二个参数为工作目录");
         System.out.println();
 
@@ -294,6 +303,22 @@ public class Run
         loadPath(args);
 
         System.out.println();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                main.stop();
+                System.out.println();
+                System.out.println();
+                System.out.println("强行停止扫描！！！ 正在统计...");
+                sort(list);
+                show(list);
+                CalculateTotalSize(list);
+            }
+        }));
+
         List<FilePath> list = getFiles_AbsolutePath(path);
         System.out.println();
 

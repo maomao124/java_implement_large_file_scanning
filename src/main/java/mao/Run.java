@@ -41,6 +41,11 @@ public class Run
     private static List<FilePath> list;
 
     /**
+     * 是否是正常结束
+     */
+    private static volatile boolean isNormalEnd;
+
+    /**
      * 获取工作路径下的所有文件，返回绝对路径
      *
      * @return {@link List}<{@link FilePath}>
@@ -309,6 +314,10 @@ public class Run
             @Override
             public void run()
             {
+                if (isNormalEnd)
+                {
+                    return;
+                }
                 main.stop();
                 System.out.println();
                 System.out.println();
@@ -327,5 +336,7 @@ public class Run
         show(list);
 
         CalculateTotalSize(list);
+
+        isNormalEnd = true;
     }
 }

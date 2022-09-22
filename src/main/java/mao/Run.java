@@ -74,18 +74,21 @@ public class Run
         {
             // 获取路径下的所有文件
             File[] files = file.listFiles();
-            for (File value : files)
+            if (files != null)
             {
-                // 如果还是文件夹 递归获取里面的文件 文件夹
-                if (value.isDirectory())
+                for (File value : files)
                 {
-                    //继续读取文件夹里面的所有文件
-                    getFiles_AbsolutePath(value.getPath(), list);
-                }
-                else
-                {
-                    id++;
-                    addList(list, id, value);
+                    // 如果还是文件夹 递归获取里面的文件 文件夹
+                    if (value.isDirectory())
+                    {
+                        //继续读取文件夹里面的所有文件
+                        getFiles_AbsolutePath(value.getPath(), list);
+                    }
+                    else
+                    {
+                        id++;
+                        addList(list, id, value);
+                    }
                 }
             }
         }
